@@ -6,8 +6,9 @@ import { useForm } from 'react-hook-form';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
-import { User, Shield, KeyRound, QrCode, Calendar, Phone, MapPin, Building, Printer, UserCircle } from 'lucide-react';
+import { User, Shield, KeyRound, Calendar, Phone, MapPin, Building, Printer, UserCircle } from 'lucide-react';
 import QRCode from 'react-qr-code';
+
 
 export const ProfilePage: React.FC = () => {
   const { user } = useAuthStore();
@@ -15,8 +16,8 @@ export const ProfilePage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'badge' | 'security'>('badge');
 
   // If user has linked employee, fetch full employee data
-  const employeeId = typeof user?.employee === 'string' 
-    ? user.employee 
+  const employeeId = typeof user?.employee === 'string'
+    ? user.employee
     : (user?.employee as any)?._id;
 
   const { employees } = useEmployees({
@@ -60,12 +61,12 @@ export const ProfilePage: React.FC = () => {
   // Compile JSON data for the QR badge scanning simulation
   const qrDataStr = employeeProfile
     ? JSON.stringify({
-        id: employeeProfile._id,
-        name: `${employeeProfile.firstName} ${employeeProfile.lastName}`,
-        email: employeeProfile.email,
-        department: typeof employeeProfile.department === 'object' ? (employeeProfile.department as any)?.name : employeeProfile.department,
-        position: employeeProfile.position,
-      })
+      id: employeeProfile._id,
+      name: `${employeeProfile.firstName} ${employeeProfile.lastName}`,
+      email: employeeProfile.email,
+      department: typeof employeeProfile.department === 'object' ? (employeeProfile.department as any)?.name : employeeProfile.department,
+      position: employeeProfile.position,
+    })
     : user?.email || '';
 
   const handlePrintBadge = () => {
@@ -150,22 +151,19 @@ export const ProfilePage: React.FC = () => {
           <div className="flex border-b border-muted">
             <button
               onClick={() => setActiveTab('badge')}
-              className={`pb-3 px-4 text-sm font-semibold border-b-2 transition-all flex items-center gap-2 ${
-                activeTab === 'badge'
+              className={`pb-3 px-4 text-sm font-semibold border-b-2 transition-all flex items-center gap-2 ${activeTab === 'badge'
                   ? 'border-primary text-primary'
                   : 'border-transparent text-muted-foreground hover:text-foreground'
-              }`}
+                }`}
             >
-              <QrCode className="w-4 h-4" />
-              Digital QR Badge
+         <QRCode value={qrDataStr} size={160} />              Digital QR Badge
             </button>
             <button
               onClick={() => setActiveTab('security')}
-              className={`pb-3 px-4 text-sm font-semibold border-b-2 transition-all flex items-center gap-2 ${
-                activeTab === 'security'
+              className={`pb-3 px-4 text-sm font-semibold border-b-2 transition-all flex items-center gap-2 ${activeTab === 'security'
                   ? 'border-primary text-primary'
                   : 'border-transparent text-muted-foreground hover:text-foreground'
-              }`}
+                }`}
             >
               <KeyRound className="w-4 h-4" />
               Change Password

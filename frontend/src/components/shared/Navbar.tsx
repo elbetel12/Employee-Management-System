@@ -61,7 +61,7 @@ export const Navbar: React.FC = () => {
         </Link>
 
         {/* Profile Avatar Card */}
-        {user && (
+        {/* {user && (
           <Link to="/profile" className="flex items-center gap-3 border-l pl-4 hover:opacity-85 transition-opacity">
             <div className="text-right">
               <p className="text-xs font-semibold text-foreground truncate leading-none">
@@ -75,7 +75,7 @@ export const Navbar: React.FC = () => {
               {user.email[0].toUpperCase()}
             </div>
           </Link>
-        )}
+        )} */}
       </div>
     </header>
   );

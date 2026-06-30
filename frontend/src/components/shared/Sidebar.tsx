@@ -74,12 +74,12 @@ export const Sidebar: React.FC = () => {
       icon: FileSpreadsheet,
       roles: ['admin', 'manager'],
     },
-    {
-      to: '/profile',
-      label: 'Profile',
-      icon: User,
-      roles: ['admin', 'manager', 'employee'],
-    },
+    // {
+    //   to: '/profile',
+    //   label: 'Profile',
+    //   icon: User,
+    //   roles: ['admin', 'manager', 'employee'],
+    // },
   ];
 
   const filteredItems = navItems.filter(
