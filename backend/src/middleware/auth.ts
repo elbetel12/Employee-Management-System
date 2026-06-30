@@ -1,64 +1,82 @@
-// 
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import User from '../models/User';
+import { config } from '../config/env';
+import { AppError } from './errorHandler';
+import { UserRole } from '../shared/types';
+import User from '../modules/auth/user.model';
 
-interface JwtPayload {
-  id: string;
+export interface AuthRequest extends Request {
+  user?: {
+    id: string;
+    role: UserRole;
+    email: string;
+    employeeId?: string;
+  };
 }
 
-// Add user property to Express Request interface
-declare global {
-  namespace Express {
-    interface Request {
-      user?: any;
-    }
+export function authenticate(
+  req: AuthRequest,
+  _res: Response,
+  next: NextFunction,
+): void {
+  const authHeader = req.headers.authorization;
+  if (!authHeader?.startsWith('Bearer ')) {
+    return next(new AppError('No token provided.', 401));
+  }
+
+  const token = authHeader.split(' ')[1];
+  try {
+    const payload = jwt.verify(token, config.jwt.accessSecret) as {
+      id: string;
+      role: UserRole;
+      email: string;
+      employeeId?: string;
+    };
+    req.user = payload;
+    next();
+  } catch {
+    next(new AppError('Invalid or expired token.', 401));
   }
 }
 
-export const protect = async (req: Request, res: Response, next: NextFunction) => {
-  let token;
-
-  if (
-    req.headers.authorization &&
-    req.headers.authorization.startsWith('Bearer')
-  ) {
-    try {
-      // Get token from header
-      token = req.headers.authorization.split(' ')[1];
-
-      // Verify token
-      const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secretkey') as JwtPayload;
-
-      // Get user from the token
-      req.user = await User.findById(decoded.id).select('-password');
-
-      next();
-    } catch (error) {
-      console.error(error);
-      res.status(401).json({ message: 'Not authorized, token failed' });
+export function authorize(...roles: UserRole[]) {
+  return (req: AuthRequest, _res: Response, next: NextFunction): void => {
+    if (!req.user) return next(new AppError('Unauthenticated.', 401));
+    if (!roles.includes(req.user.role)) {
+      return next(
+        new AppError('You do not have permission to perform this action.', 403),
+      );
     }
-  }
-
-  if (!token) {
-    res.status(401).json({ message: 'Not authorized, no token' });
-  }
-};
-
-// Admin middleware
-export const admin = (req: Request, res: Response, next: NextFunction) => {
-  if (req.user && req.user.role === 'admin') {
     next();
-  } else {
-    res.status(401).json({ message: 'Not authorized as an admin' });
-  }
-};
+  };
+}
 
-// Manager middleware
-export const manager = (req: Request, res: Response, next: NextFunction) => {
-  if (req.user && (req.user.role === 'manager' || req.user.role === 'admin')) {
+// Scope: managers can only see their department's employees
+export async function scopeDepartment(
+  req: AuthRequest,
+  _res: Response,
+  next: NextFunction,
+): Promise<void> {
+  try {
+    if (!req.user) return next(new AppError('Unauthenticated.', 401));
+    if (req.user.role === 'admin') return next(); // admins see everything
+
+    const user = await User.findById(req.user.id).populate({
+      path: 'employee',
+      select: 'department',
+    });
+
+    if (!user?.employee) {
+      return next(new AppError('User has no linked employee record.', 400));
+    }
+
+    // Attach the department id to the request for controller use
+    (req as AuthRequest & { departmentId?: string }).departmentId = (
+      user.employee as unknown as { department: string }
+    ).department?.toString();
+
     next();
-  } else {
-    res.status(401).json({ message: 'Not authorized as a manager' });
+  } catch (err) {
+    next(err);
   }
-};
+}

@@ -1,98 +1,107 @@
-# Employee Management System
+# Employee Management System (MERN Stack)
 
-A modern, responsive Employee Management System built with React (TypeScript) and MongoDB.
+A comprehensive, role-based Employee Management System built with a React & TypeScript frontend and an Express, MongoDB, & TypeScript backend.
 
-## Features
+---
 
-- User Authentication with JWT
-- Employee Management
-- Department Management
-- Leave Management
-- Attendance Tracking
-- Payroll Management
-- Performance Evaluations
-- Work Hours Reporting
-- QR Code-based Attendance
+## Project Structure
 
-## Tech Stack
+* `/frontend` — React Single Page Application (Vite + TypeScript + Tailwind CSS)
+* `/backend` — Express.js Web API (Node + TypeScript + MongoDB + Mongoose)
 
-### Backend
+---
 
-- Node.js
-- Express
-- TypeScript
-- MongoDB (with Mongoose)
-- JWT Authentication
+## Core Features
 
-### Frontend
+1. **Role-Based Access Control (RBAC):** Customized dashboards and permissions for `admin` (HR/IT), `manager` (Department Head), and `employee` roles.
+2. **Attendance & QR Check-In:** Log attendance via simulated QR badge scans or manual entry.
+3. **Leave Management:** Custom approval workflow with integrated tenure checks, annual frequency limits, and calendar date validation.
+4. **Payroll Processing:** Auto-calculate base pay from hours worked, bonuses, penalty deductions, and tax rates. Includes printable pay slip invoices.
+5. **Work Hours Reports:** Daily matrix layout of monthly hours worked with SheetJS Excel export functionality.
+6. **Performance Reviews:** Track manager reviews and automatically rank performance indices.
+7. **Notifications:** Real-time notifications and unread badges.
 
-- React
-- TypeScript
-- Redux Toolkit
-- React Router
-- Axios
-- Bootstrap
-- Chart.js
+---
 
-## Getting Started
+## Prerequisites
 
-### Prerequisites
+Ensure you have the following installed locally:
+* **Node.js** (v18 or higher)
+* **npm** (v9 or higher)
+* **MongoDB** (Running locally on `mongodb://localhost:27017` or via MongoDB Atlas connection string)
 
-- Node.js (v14+)
-- MongoDB
+---
 
-### Installation
+## Installation & Setup
 
-1. Clone the repository:
+### 1. Backend Server Setup
 
-```
-git clone <repository-url>
-cd employee-management-system
-```
+Navigate to the `backend` directory, install packages, and set up your environment variables:
 
-2. Install backend dependencies:
-
-```
+```bash
 cd backend
 npm install
 ```
 
-3. Create a `.env` file in the backend directory with the following variables:
+Create a `.env` file in the root of the `backend` folder:
 
-```
-NODE_ENV=development
+```env
 PORT=5000
-MONGO_URI=mongodb://localhost:27017/employeeManagementSystem
-JWT_SECRET=your_secret_key
+MONGODB_URI=mongodb://localhost:27017/ems
+JWT_ACCESS_SECRET=your_jwt_access_secret_key_here
+JWT_REFRESH_SECRET=your_jwt_refresh_secret_key_here
+NODE_ENV=development
 ```
 
-4. Install frontend dependencies:
+#### Seed Initial System Data:
 
+Run the database seed scripts to configure initial departments, roster accounts, and the default system administrator:
+
+```bash
+# Seed the default admin account (admin@example.com / adminpassword123)
+npx tsx seedAdmin.ts
+
+# Seed test departments, employees, leaves, and attendance logs
+npx tsx seedData.ts
 ```
-cd ../frontend
-npm install
-```
 
-### Running the application
+#### Run the Backend Dev Server:
 
-1. Start the backend server (from the backend directory):
-
-```
+```bash
 npm run dev
 ```
 
-2. Start the frontend server (from the frontend directory):
+The backend server runs on [http://localhost:5000](http://localhost:5000).
 
+---
+
+### 2. Frontend SPA Setup
+
+Navigate to the `frontend` directory, install dependencies, and run the development server:
+
+```bash
+cd ../frontend
+npm install
+npm run dev
 ```
-npm start
-```
 
-3. Open a browser and navigate to `http://localhost:3000`
+The frontend application runs on [http://localhost:5173](http://localhost:5173).
 
-## Default Admin User
+---
 
-Username: admin
-Password: admin123
+## Default Login Credentials
+
+* **System Admin (HR/IT):**
+  * Email: `admin@example.com`
+  * Password: `adminpassword123`
+* **Department Head (Manager):**
+  * Email: `john.doe@company.com` (Example manager seeded via `seedData.ts`)
+  * Password: `Password@123`
+* **Staff Member (Employee):**
+  * Email: `jane.smith@company.com` (Example employee seeded via `seedData.ts`)
+  * Password: `Password@123`
+
+---
 
 ## License
 

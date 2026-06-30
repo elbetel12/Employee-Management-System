@@ -1,130 +1,116 @@
-import { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { toast } from 'react-toastify';
-import { login, reset } from '../features/auth/authSlice';
-import { RootState, AppDispatch } from '../store';
+import React from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useAuth } from '../hooks/useAuth';
+import { loginSchema, type LoginInput } from '../features/auth/auth.schema';
+import { Button } from '../components/ui/button';
+import { Input } from '../components/ui/input';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
+import { KeyRound, Mail, ArrowRight } from 'lucide-react';
+import { useNavigate, useLocation } from 'react-router-dom';
 
-const Login = () => {
-  const [formData, setFormData] = useState({
-    username: '',
-    password: '',
+export const Login: React.FC = () => {
+  const { login, isLoggingIn } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = (location.state as { from?: { pathname: string } })?.from?.pathname || '/';
+
+  const {
+    register,
+    handleSubmit,
+    setError,
+    formState: { errors },
+  } = useForm<LoginInput>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: '',
+      password: '',
+    },
   });
 
-  const { username, password } = formData;
-
-  const navigate = useNavigate();
-  const dispatch = useDispatch<AppDispatch>();
-
-  const { user, isLoading, isError, isSuccess, message } = useSelector(
-    (state: RootState) => state.auth
-  );
-
-  useEffect(() => {
-    if (isError) {
-      toast.error(message);
+  const onSubmit = async (data: LoginInput) => {
+    try {
+      await login(data);
+      navigate(from, { replace: true });
+    } catch (err: any) {
+      const message = err.response?.data?.message || 'Invalid email or password.';
+      setError('root', { message });
     }
-
-    if (isSuccess || user) {
-      navigate('/');
-    }
-
-    dispatch(reset());
-  }, [user, isError, isSuccess, message, navigate, dispatch]);
-
-  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData((prevState) => ({
-      ...prevState,
-      [e.target.name]: e.target.value,
-    }));
-  };
-
-  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    const userData = {
-      username,
-      password,
-    };
-
-    dispatch(login(userData));
   };
 
   return (
-    <div className="container-scroller">
-      <div className="container-fluid page-body-wrapper full-page-wrapper">
-        <div className="content-wrapper d-flex align-items-center auth auth-bg-1 theme-one">
-          <div className="row w-100">
-            <div className="col-lg-4 mx-auto">
-              <div className="auto-form-wrapper">
-                <div className="brand-logo text-center mb-4">
-                  <img src="/images/ems-logo.svg" alt="logo" />
-                </div>
-                <form onSubmit={onSubmit}>
-                  <div className="form-group">
-                    <label className="label">Username</label>
-                    <div className="input-group">
-                      <input
-                        type="text"
-                        className="form-control"
-                        id="username"
-                        name="username"
-                        placeholder="Username"
-                        value={username}
-                        onChange={onChange}
-                      />
-                      <div className="input-group-append">
-                        <span className="input-group-text">
-                          <i className="mdi mdi-check-circle-outline"></i>
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="form-group">
-                    <label className="label">Password</label>
-                    <div className="input-group">
-                      <input
-                        type="password"
-                        className="form-control"
-                        id="password"
-                        name="password"
-                        placeholder="*********"
-                        value={password}
-                        onChange={onChange}
-                      />
-                      <div className="input-group-append">
-                        <span className="input-group-text">
-                          <i className="mdi mdi-check-circle-outline"></i>
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="form-group">
-                    <button
-                      type="submit"
-                      className="btn btn-primary submit-btn btn-block"
-                      disabled={isLoading}
-                    >
-                      {isLoading ? 'Loading...' : 'Login'}
-                    </button>
-                  </div>
-                  <div className="text-block text-center my-3">
-                    <span className="text-small font-weight-semibold">Not a member ?</span>
-                    <Link to="/register" className="text-black text-small ms-1">Create new account</Link>
-                  </div>
-                </form>
-              </div>
-              <p className="footer-text text-center">
-                Copyright © {new Date().getFullYear()} EMS. All rights reserved.
-              </p>
-            </div>
+    <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-br from-indigo-550 via-background to-blue-50 relative overflow-hidden px-4">
+      {/* Decorative colored blobs */}
+      <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[60%] rounded-full bg-blue-500/10 blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[60%] rounded-full bg-purple-500/10 blur-[120px] pointer-events-none" />
+
+      <Card className="w-full max-w-md glass-card shadow-2xl border-white/20 relative z-10 transition-transform duration-300">
+        <CardHeader className="space-y-2 text-center pb-4">
+          <div className="mx-auto w-12 h-12 rounded-2xl bg-primary flex items-center justify-center text-primary-foreground font-black text-xl shadow-lg shadow-primary/20 mb-3">
+            EM
           </div>
-        </div>
-      </div>
+          <CardTitle className="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-primary to-indigo-600 bg-clip-text text-transparent">
+            Welcome Back
+          </CardTitle>
+          <CardDescription className="text-muted-foreground/80">
+            Sign in to access your Employee Management dashboard.
+          </CardDescription>
+        </CardHeader>
+
+        <CardContent className="pt-2">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+            {errors.root && (
+              <div className="bg-destructive/15 border border-destructive/20 text-destructive text-sm rounded-lg p-3 text-center font-medium animate-shake">
+                {errors.root.message}
+              </div>
+            )}
+
+            <div className="relative">
+              <Mail className="absolute left-3.5 top-[38px] h-4 w-4 text-muted-foreground" />
+              <Input
+                label="Email Address"
+                placeholder="you@company.com"
+                type="email"
+                autoComplete="username"
+                className="pl-10"
+                error={errors.email?.message}
+                disabled={isLoggingIn}
+                {...register('email')}
+              />
+            </div>
+
+            <div className="relative">
+              <KeyRound className="absolute left-3.5 top-[38px] h-4 w-4 text-muted-foreground" />
+              <Input
+                label="Password"
+                placeholder="••••••••"
+                type="password"
+                autoComplete="current-password"
+                className="pl-10"
+                error={errors.password?.message}
+                disabled={isLoggingIn}
+                {...register('password')}
+              />
+            </div>
+
+            <Button
+              type="submit"
+              className="w-full h-11 text-sm font-semibold transition-all mt-6 shadow-lg shadow-primary/25 hover:shadow-primary/35 flex items-center justify-center gap-2 group"
+              disabled={isLoggingIn}
+            >
+              {isLoggingIn ? (
+                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              ) : (
+                <>
+                  Sign In
+                  <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                </>
+              )}
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
     </div>
   );
 };
-
 export default Login;
-
-// 
