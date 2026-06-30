@@ -22,7 +22,6 @@ services:
           type: web
           name: ems-frontend
           property: host
-        value: https://${host}
 
   # ─── React Frontend Static Site ─────────────────────────────────────────────
   - type: web
@@ -45,4 +44,3 @@ services:
           type: web
           name: ems-backend
           property: host
-        value: https://${host}/api/v1
