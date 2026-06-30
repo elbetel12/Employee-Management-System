@@ -11,7 +11,6 @@ import {
   TrendingUp,
   Bell,
   LogOut,
-  User,
   FileSpreadsheet,
 } from 'lucide-react';
 import { useNotifications } from '../../hooks/useNotifications';
