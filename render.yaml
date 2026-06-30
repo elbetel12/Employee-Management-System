@@ -19,20 +19,20 @@ services:
         generateValue: true # Render will auto-generate a secure random token
       - key: CLIENT_URL
         fromService:
-          type: web
+          type: static
           name: ems-frontend
           property: host
         value: https://${host}
 
   # ─── React Frontend Static Site ─────────────────────────────────────────────
-  - type: web
+  - type: static
     name: ems-frontend
-    runtime: static
     rootDir: frontend
     buildCommand: npm install && npm run build
     publishDir: dist
     headers:
-      - key: Cache-Control
+      - path: /*
+        name: Cache-Control
         value: public, max-age=31536000, immutable
     routes:
       - type: rewrite
