@@ -1,0 +1,47 @@
+services:
+  # ─── Express Backend Web Service ──────────────────────────────────────────
+  - type: web
+    name: ems-backend
+    runtime: node
+    rootDir: backend
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: PORT
+        value: 5000
+      - key: NODE_ENV
+        value: production
+      - key: MONGODB_URI
+        sync: false # Set this in Render's dashboard (e.g. MongoDB Atlas Connection String)
+      - key: JWT_ACCESS_SECRET
+        generateValue: true # Render will auto-generate a secure random token
+      - key: JWT_REFRESH_SECRET
+        generateValue: true # Render will auto-generate a secure random token
+      - key: CLIENT_URL
+        fromService:
+          type: web
+          name: ems-frontend
+          property: host
+        value: https://${host}
+
+  # ─── React Frontend Static Site ─────────────────────────────────────────────
+  - type: web
+    name: ems-frontend
+    runtime: static
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    publishDir: dist
+    headers:
+      - key: Cache-Control
+        value: public, max-age=31536000, immutable
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: VITE_API_BASE_URL
+        fromService:
+          type: web
+          name: ems-backend
+          property: host
+        value: https://${host}/api/v1

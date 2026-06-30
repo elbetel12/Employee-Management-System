@@ -106,3 +106,24 @@ The frontend application runs on [http://localhost:5173](http://localhost:5173).
 ## License
 
 This project is licensed under the MIT License.
+
+---
+
+## Production Deployment on Render
+
+This repository includes a `render.yaml` blueprint file for zero-configuration, automated monorepo deployment on **Render**.
+
+### Steps to Deploy:
+
+1. **Push your code** to your own GitHub repository.
+2. **Log into Render** ([dashboard.render.com](https://dashboard.render.com)).
+3. Click **New +** and select **Blueprints**.
+4. Connect your GitHub repository.
+5. Render will automatically parse the `render.yaml` file and prepare:
+   * **ems-backend:** Node/Express Web Service.
+   * **ems-frontend:** React Static Site.
+6. **Set Environment Variables:**
+   * During the blueprint creation, you will be prompted to enter the `MONGODB_URI` connection string for the backend. Use a managed database connection string like **MongoDB Atlas**.
+   * Other keys like `JWT_ACCESS_SECRET` and `JWT_REFRESH_SECRET` will be auto-generated securely by Render.
+7. Click **Apply** to build and spin up the services.
+
