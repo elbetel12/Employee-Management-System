@@ -1,17 +1,16 @@
 import React, { useState } from 'react';
 import { usePayroll } from '../hooks/usePayroll';
-import { useEmployees } from '../hooks/useEmployees';
 import { useForm } from 'react-hook-form';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../components/ui/card';
-import { Sparkles, Calendar, Edit3, CreditCard, X, Printer } from 'lucide-react';
-import { formatDate, formatCurrency } from '../lib/utils';
+import { Sparkles, Edit3, CreditCard, X, Printer } from 'lucide-react';
+import { formatCurrency } from '../lib/utils';
 import { useAuthStore } from '../store/authStore';
 
 export const PayrollPage: React.FC = () => {
   const { user: currentUser } = useAuthStore();
-  const [page, setPage] = useState(1);
+  const [page] = useState(1);
   const [month, setMonth] = useState<number | ''>('');
   const [year, setYear] = useState<number | ''>('');
   const [isGenerateOpen, setIsGenerateOpen] = useState(false);
@@ -26,7 +25,6 @@ export const PayrollPage: React.FC = () => {
 
   const {
     payrolls,
-    meta,
     isLoading,
     generatePayroll,
     updatePayroll,
@@ -47,7 +45,7 @@ export const PayrollPage: React.FC = () => {
 
   const onGenerateSubmit = async (data: { payDate: string }) => {
     try {
-      const res = await generatePayroll(data);
+      await generatePayroll(data);
       alert('Payroll batch generated successfully.');
       setIsGenerateOpen(false);
     } catch (err: any) {

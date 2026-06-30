@@ -6,19 +6,18 @@ import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Select } from '../components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../components/ui/card';
-import { Sparkles, Star, TrendingUp, X, Award } from 'lucide-react';
+import { Star, TrendingUp, X, Award } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 
 export const PerformancePage: React.FC = () => {
   const { user: currentUser } = useAuthStore();
-  const [page, setPage] = useState(1);
+  const [page] = useState(1);
   const [month, setMonth] = useState<number | ''>('');
   const [year, setYear] = useState<number | ''>('');
   const [isOpen, setIsOpen] = useState(false);
 
   const {
     evaluations,
-    meta,
     isLoading,
     evaluate,
   } = usePerformance({
@@ -34,8 +33,7 @@ export const PerformancePage: React.FC = () => {
     register,
     handleSubmit,
     reset,
-    formState: { errors },
-  } = useForm({
+    } = useForm({
     defaultValues: {
       employeeId: '',
       comments: '',

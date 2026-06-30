@@ -1,8 +1,8 @@
 import React from 'react';
 import { useNotifications } from '../hooks/useNotifications';
 import { Button } from '../components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../components/ui/card';
-import { Bell, Check, BellRing, Sparkles } from 'lucide-react';
+import { Card, CardContent } from '../components/ui/card';
+import { Check, BellRing, Sparkles } from 'lucide-react';
 
 export const NotificationsPage: React.FC = () => {
   const {

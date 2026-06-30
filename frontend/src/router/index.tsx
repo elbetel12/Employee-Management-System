@@ -1,4 +1,3 @@
-import React from 'react';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 import { Layout } from '../components/shared/Layout';
 import { ProtectedRoute } from '../components/shared/ProtectedRoute';

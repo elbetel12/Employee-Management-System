@@ -6,13 +6,13 @@ import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Select } from '../components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../components/ui/card';
-import { Search, CalendarCheck, CalendarDays, ArrowRightLeft, X, Plus } from 'lucide-react';
+import { CalendarCheck, ArrowRightLeft, X, Plus } from 'lucide-react';
 import { formatDate } from '../lib/utils';
 import { useAuthStore } from '../store/authStore';
 
 export const AttendancePage: React.FC = () => {
   const { user: currentUser } = useAuthStore();
-  const [page, setPage] = useState(1);
+  const [page] = useState(1);
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [empFilter, setEmpFilter] = useState('');
@@ -21,7 +21,6 @@ export const AttendancePage: React.FC = () => {
 
   const {
     records,
-    meta,
     isLoading,
     scanQr,
     manualLog,

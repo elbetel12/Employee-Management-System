@@ -4,8 +4,7 @@ import { useDepartments } from '../hooks/useDepartments';
 import { useAuthStore } from '../store/authStore';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../components/ui/card';
 import { Button } from '../components/ui/button';
-import { Select } from '../components/ui/select';
-import { FileSpreadsheet, Search, Loader2 } from 'lucide-react';
+import { FileSpreadsheet,Loader2 } from 'lucide-react';
 
 export const ReportsPage: React.FC = () => {
   const { user } = useAuthStore();
@@ -21,7 +20,7 @@ export const ReportsPage: React.FC = () => {
   const { departments } = useDepartments();
 
   // Fetch report
-  const { data: reportData, isLoading, refetch } = useWorkHoursReport({
+  const { data: reportData, isLoading } = useWorkHoursReport({
     month,
     year,
     department: deptFilter || undefined,

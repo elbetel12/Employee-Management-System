@@ -18,7 +18,6 @@ export const LeavesPage: React.FC = () => {
 
   const {
     leaves,
-    meta,
     isLoading,
     requestLeave,
     updateLeaveStatus,

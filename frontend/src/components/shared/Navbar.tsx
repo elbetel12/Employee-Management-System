@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Sun, Moon, Bell, User } from 'lucide-react';
+import { Sun, Moon, Bell } from 'lucide-react';
 import { useAuthStore } from '../../store/authStore';
 import { useNotifications } from '../../hooks/useNotifications';
 import { Link } from 'react-router-dom';

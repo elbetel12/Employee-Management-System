@@ -19,7 +19,7 @@ export const ProfilePage: React.FC = () => {
     ? user.employee 
     : (user?.employee as any)?._id;
 
-  const { employees, isLoading: isEmpLoading } = useEmployees({
+  const { employees } = useEmployees({
     limit: 1,
   });
 
